@@ -1,0 +1,88 @@
+CUDNN:
+  BENCHMARK: false
+  DETERMINISTIC: false
+  ENABLED: true
+
+WORKERS: 4
+PRINT_FREQ: 100
+DISTANCE: 2
+
+DATASET:
+  NAME: "PoseTrack"
+  JSON_DIR: "./DcPose_supp_files/posetrack17_json_files"
+  IMG_DIR: "../posetrack/17/rename/images_renamed"
+  TEST_IMG_DIR: "../posetrack/17/rename/images_renamed"
+  IS_POSETRACK18: false
+  COLOR_RGB: true
+  DATASET: 'posetrack'
+  ROOT: ''
+  TEST_SET: 'val2017'
+  TRAIN_SET: 'train2017'
+  INPUT_TYPE: 'spatiotemporal_window'
+  BBOX_ENLARGE_FACTOR: 1.25
+
+
+MODEL:
+  FREEZE_HRNET_WEIGHTS: true
+  EVALUATE: true
+  INIT_WEIGHTS: true
+
+  NUM_JOINTS: 17
+  PRETRAINED: 'pretrained/coco_pretrained_resnet50_256x192.pth'
+  TARGET_TYPE: gaussian
+  IMAGE_SIZE:
+    - 192
+    - 256
+  HEATMAP_SIZE:
+    - 48
+    - 64
+  SIGMA: 3
+  USE_RECTIFIER: true
+
+  EXTRA:
+    PRETRAINED_LAYERS:
+      - '*'
+
+TRAIN:
+  LR: 1e-4
+
+  FLIP: true
+  NUM_JOINTS_HALF_BODY: 8
+  PROB_HALF_BODY: 0.3
+  ROT_FACTOR: 45
+  SCALE_FACTOR: [ 0.35, 0.35 ]
+  SHUFFLE: true
+  BEGIN_EPOCH: 0
+  END_EPOCH: 40
+  OPTIMIZER: adamw
+  MILESTONES:
+    - 20
+    - 30
+  GAMMA: 0.1
+  MOMENTUM: 0.9
+  NESTEROV: false
+
+VAL:
+  ANNOT_DIR: './DcPose_supp_files/posetrack17_annotation_dirs/jsons/val/'
+  COCO_BBOX_FILE: './DcPose_supp_files/posetrack17_precomputed_boxes/val_boxes.json'
+#  USE_GT_BBOX: true
+  USE_GT_BBOX: false
+  BBOX_THRE: 1.0
+  IMAGE_THRE: 0.2
+  IN_VIS_THRE: 0.2
+  NMS_THRE: 1.0
+  OKS_THRE: 0.9
+  FLIP_VAL: false
+  POST_PROCESS: true
+
+TEST:
+  ANNOT_DIR: './DcPose_supp_files/posetrack17_annotation_dirs/jsons/test'
+  COCO_BBOX_FILE: './DcPose_supp_files/posetrack17_precomputed_boxes/test_boxes.json'
+  USE_GT_BBOX: false
+  BBOX_THRE: 1.0
+  IMAGE_THRE: 0.2
+  IN_VIS_THRE: 0.2
+  NMS_THRE: 1.0
+  OKS_THRE: 0.9
+  FLIP_TEST: false
+  POST_PROCESS: true

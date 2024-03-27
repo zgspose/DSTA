@@ -1,0 +1,25 @@
+_BASE_: "../Base_PoseTrack17.yaml"
+EXPERIMENT_NAME: 'DSTA_exp'
+WORKERS: 2
+GPUS: (0,)
+OUTPUT_DIR: './output/'
+CUDNN:
+  BENCHMARK: true
+  DETERMINISTIC: true
+  ENABLED: true
+CORE_FUNCTION: CommonFunction
+
+MODEL:
+  NAME: DSTA_STD
+  VERSION:
+      - 'resnet50_256x192'
+
+LOSS:
+  USE_TARGET_WEIGHT: true
+
+TRAIN:
+  AUTO_RESUME: true
+  SAVE_MODEL_PER_EPOCH: 1
+  BATCH_SIZE_PER_GPU: 32
+VAL:
+  BATCH_SIZE_PER_GPU: 64
