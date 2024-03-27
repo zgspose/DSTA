@@ -54,12 +54,12 @@ cd tools
 python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml --val 
 ```
 
-## Cite 
+## Citations
 
 If you find our paper useful in your research, please consider citing:
 
 ```bibtex
-@InProceedings{He_2023_CVPR,
+@InProceedings{He_2024_CVPR,
     author    = {He, Jijie and Yang, Wenwu},
     title     = {Video-Based Human Pose Regression via Decoupled Space-Time Aggregation},
     booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
