@@ -1,6 +1,6 @@
 # Video-Based Human Pose Regression via Decoupled Space-Time Aggregation
 
-This repo is the official implementation for Video-Based Human Pose Regression via Decoupled Space-Time Aggregation[[arvix](https://arxiv.org/abs/2403.19926)]. The paper has been accepted to [CVPR 2024](https://cvpr.thecvf.com/Conferences/2024).
+This repo is the official implementation for **Video-Based Human Pose Regression via Decoupled Space-Time Aggregation**[[arvix](https://arxiv.org/abs/2403.19926)]. The paper has been accepted to [CVPR 2024](https://cvpr.thecvf.com/Conferences/2024).
 
 
 
