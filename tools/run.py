@@ -5,17 +5,15 @@ import os
 import sys
 import torch.backends.cudnn as cudnn
 
-sys.path.insert(0, os.path.abspath('../'))
+# project abs_path
+sys.path.insert(0, os.path.abspath('/code/DSTA'))
 from posetimation import get_cfg, update_config
 from engine import default_parse_args, DefaultRunner
 from mmcv import Config
 
 def setup(args):
     cfg = get_cfg(args)
-    cfg1 = Config.fromfile(args.config)
-    cfg.update(cfg1)
     update_config(cfg, args)
-    cfg.data.test.test_mode = True
 
     # cudnn related setting
     cudnn.benchmark = cfg.CUDNN.BENCHMARK

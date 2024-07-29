@@ -1,5 +1,5 @@
 _BASE_: "../Base_PoseTrack17.yaml"
-EXPERIMENT_NAME: 'DSTA_exp'
+EXPERIMENT_NAME: 'DSTA_ResNet50'
 WORKERS: 2
 GPUS: (0,)
 OUTPUT_DIR: './output/'
@@ -10,7 +10,7 @@ CUDNN:
 CORE_FUNCTION: CommonFunction
 
 MODEL:
-  NAME: DSTA_STD
+  NAME: DSTA_STD_ResNet50
   VERSION:
       - 'resnet50_256x192'
 

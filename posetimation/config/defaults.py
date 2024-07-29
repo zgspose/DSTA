@@ -45,6 +45,7 @@ _C.CUDNN.ENABLED = True
 # common params for NETWORK
 _C.MODEL = CfgNode()
 _C.MODEL.NAME = 'pose_hrnet'
+_C.MODEL.VERSION = ["0"]
 _C.MODEL.INIT_WEIGHTS = True
 _C.MODEL.FREEZE_WEIGHTS = False
 _C.MODEL.PRETRAINED = ''

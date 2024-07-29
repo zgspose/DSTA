@@ -15,9 +15,9 @@ def default_parse_args():
     parser.add_argument('--val_from_checkpoint',
                         help='exec val from the checkpoint_id. if config.yaml specifies a model file, this parameter will invalid',
                         type=int,
-                        default='-1')
+                        default='28')
     parser.add_argument('--test', action='store_true', default=False)
-    parser.add_argument('--root_dir', type=str, default='../')
+    parser.add_argument('--root_dir', type=str, default='./')
     parser.add_argument('opts',
                         help="Modify config options using the command-line",
                         default=None,

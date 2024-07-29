@@ -9,9 +9,9 @@ DISTANCE: 2
 
 DATASET:
   NAME: "PoseTrack"
-  JSON_DIR: "./DcPose_supp_files/posetrack17_json_files"
-  IMG_DIR: "../posetrack/17/rename/images_renamed"
-  TEST_IMG_DIR: "../posetrack/17/rename/images_renamed"
+  JSON_DIR: "/dataset/17/rename/jsons"
+  IMG_DIR: "/dataset/17/rename/images_renamed"
+  TEST_IMG_DIR: "/dataset/17/rename/images_renamed"
   IS_POSETRACK18: false
   COLOR_RGB: true
   DATASET: 'posetrack'
@@ -28,7 +28,7 @@ MODEL:
   INIT_WEIGHTS: true
 
   NUM_JOINTS: 17
-  PRETRAINED: 'pretrained/coco_pretrained_resnet50_256x192.pth'
+  PRETRAINED: '/code/DSTA/checkpoints/coco-laplace-rle.pth'
   TARGET_TYPE: gaussian
   IMAGE_SIZE:
     - 192
@@ -53,7 +53,7 @@ TRAIN:
   SCALE_FACTOR: [ 0.35, 0.35 ]
   SHUFFLE: true
   BEGIN_EPOCH: 0
-  END_EPOCH: 40
+  END_EPOCH: 50
   OPTIMIZER: adamw
   MILESTONES:
     - 20
@@ -63,8 +63,8 @@ TRAIN:
   NESTEROV: false
 
 VAL:
-  ANNOT_DIR: './DcPose_supp_files/posetrack17_annotation_dirs/jsons/val/'
-  COCO_BBOX_FILE: './DcPose_supp_files/posetrack17_precomputed_boxes/val_boxes.json'
+  ANNOT_DIR: 'support_files/posetrack17_annotation_dirs/jsons/val/'
+  COCO_BBOX_FILE: 'support_files/posetrack17_precomputed_boxes/val_boxes.json'
 #  USE_GT_BBOX: true
   USE_GT_BBOX: false
   BBOX_THRE: 1.0

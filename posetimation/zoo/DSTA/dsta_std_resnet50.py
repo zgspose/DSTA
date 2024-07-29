@@ -103,10 +103,10 @@ class Linear(nn.Module):
         return y
 
 @MODEL_REGISTRY.register()
-class DSTA_STD(BaseModel):
+class DSTA_STD_ResNet50(BaseModel):
 
     def __init__(self, cfg, phase, **kwargs):
-        super(DSTA_STD, self).__init__()
+        super(DSTA_STD_ResNet50, self).__init__()
         self.logger = logging.getLogger(__name__)
         self.pretrained_layers = cfg['MODEL']['EXTRA']['PRETRAINED_LAYERS']
         self.is_train = True if phase == TRAIN_PHASE else False
@@ -116,13 +116,13 @@ class DSTA_STD(BaseModel):
 
         self.pretrained = cfg.MODEL.PRETRAINED
         self.embed_dim_ratio = 32
-        self.Spatial_pos_embed = nn.Parameter(torch.zeros(1, self.num_joints, self.embed_dim_ratio))
+        self.Spatial_pos_embed = nn.Parameter(torch.zeros(3, self.embed_dim_ratio))
         drop_path_rate = 0.1
         depth = 4
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
         norm_layer = partial(nn.LayerNorm, eps=1e-6)
 
-        embed_dim = self.embed_dim_ratio * 17
+        # embed_dim = self.embed_dim_ratio * 17
         self.Spatial_blocks = nn.ModuleList([
             Block(
                 dim=self.embed_dim_ratio, num_heads=8, mlp_ratio=2., qkv_bias=True, qk_scale=None,
@@ -165,19 +165,18 @@ class DSTA_STD(BaseModel):
 
         #SD
         feat_S = feat[self.num_frame // 2]
-        feat_S_center = feat_S[:, -1].unsqueeze(1).unsqueeze(1).repeat(1,5,1,1)
+        unused_keypoint_token = feat_S[:, -2:]  # shape : bs, 2, dims
         feat_S = feat_S[:, :15]
         feat_S = rearrange(feat_S, 'b (g n) c  -> b g n c', g=5)
-        feat_S = torch.cat((feat_S, feat_S_center),dim=2)
         feat_S = feat_S + self.Spatial_pos_embed
         feat_S = rearrange(feat_S, 'b g n c -> (b g) n c')
         for blk in self.Spatial_blocks:
-            feat_S = blk(feat_S)
+            feat_S = blk(feat_S)  
         feat_S = self.Spatial_norm(feat_S)
         feat_S = rearrange(feat_S, '(b g) n c  -> b g n c', g=5)
-        feat_S = feat_S[:, :, :-1]
         feat_S = rearrange(feat_S, 'b g n c ->b (g n) c')
-        feat_S = torch.cat((feat_S_center.squeeze()[:,:2],feat_S), dim=1)
+        feat_S = torch.concat([feat_S, unused_keypoint_token], dim=1)
+        
 
         #TD
         feat_T = rearrange(feat, 'f b p c -> (b p) f c')
@@ -300,12 +299,12 @@ class DSTA_STD(BaseModel):
 
     @classmethod
     def get_model_hyper_parameters(cls, args, cfg):
-        dilation = cfg.MODEL.DEFORMABLE_CONV.DILATION
-        dilation_str = ",".join(map(str, dilation))
-        hyper_parameters_setting = "D_{}".format(dilation_str)
-        return hyper_parameters_setting
+        # dilation = cfg.MODEL.DEFORMABLE_CONV.DILATION
+        # dilation_str = ",".join(map(str, dilation))
+        # hyper_parameters_setting = "D_{}".format(dilation_str)
+        return 'Resnet50'
 
     @classmethod
     def get_net(cls, cfg, phase, **kwargs):
-        model = DSTA_STD(cfg, phase, **kwargs)
+        model = DSTA_STD_ResNet50(cfg, phase, **kwargs)
         return model
