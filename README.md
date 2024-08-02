@@ -10,7 +10,7 @@ By leveraging temporal dependency in video sequences, multi-frame human pose est
 
 ![DSTA](./images/pipeline.jpg)
 
-## Weighted Download
+## Weights Download
 We provide the model weights trained by the method in this paper, which can be downloaded here.
 https://drive.google.com/drive/folders/10O1JWFOyMSf5X2glQdMXf2v26CyCrRel?usp=sharing
 
