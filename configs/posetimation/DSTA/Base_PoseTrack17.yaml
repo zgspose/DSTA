@@ -44,7 +44,7 @@ MODEL:
       - '*'
 
 TRAIN:
-  LR: 1e-4
+  LR: 5e-5
 
   FLIP: true
   NUM_JOINTS_HALF_BODY: 8
@@ -53,11 +53,11 @@ TRAIN:
   SCALE_FACTOR: [ 0.35, 0.35 ]
   SHUFFLE: true
   BEGIN_EPOCH: 0
-  END_EPOCH: 50
+  END_EPOCH: 20
   OPTIMIZER: adamw
   MILESTONES:
-    - 20
-    - 30
+    - 10
+    - 15
   GAMMA: 0.1
   MOMENTUM: 0.9
   NESTEROV: false
