@@ -36,6 +36,12 @@ _C.EVAL_TRACKING = False
 _C.TRACK_PREDS_FILE = ''
 _C.TRACKING_THRESHOLD = 0.5
 
+<<<<<<< HEAD
+=======
+# add
+_C.WINDOWS_SIZE = 3
+
+>>>>>>> 950ccc5 (add inference)
 # Cudnn related params
 _C.CUDNN = CfgNode()
 _C.CUDNN.BENCHMARK = True
