@@ -65,7 +65,7 @@ def process_keypoints(predicts, used_keypoint_indices):
 
     return keypoints
 
-def process_video(video_path, model, detector, device, cfg, window_size=5, step_frame=1):
+def process_video(video_path, model, detector, device, cfg, window_size=3, step_frame=1):
     cap = cv2.VideoCapture(video_path)
     frame_buffer = []
     results = []
@@ -192,7 +192,7 @@ args = default_parse_args()
 cfg = setup(args)
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-model_path = "./best_model.pt"
+model_path = "./DSTA_Resnet50.pt"
 
 # Load the model
 model = load_model(cfg, model_path, device)

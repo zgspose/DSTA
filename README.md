@@ -57,6 +57,11 @@ python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml --trai
 cd tools
 python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml --val 
 ```
+### Inference
+```
+cd tools
+python inference.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml
+```
 
 ## Citations
 
