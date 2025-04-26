@@ -50,17 +50,17 @@ Follow the [MMPose instruction](mmpose_README.md) to install the mmpose.
 ### Training
 ```
 cd tools
-python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml --train 
+python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs-resnet50.yaml --train 
 ```
 ### Evaluation
 ```
 cd tools
-python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml --val 
+python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs-resnet50.yaml --val 
 ```
 ### Inference
 ```
 cd tools
-python inference.py --cfg ../configs/posetimation/DSTA/posetrack17/configs.yaml
+python inference.py --cfg ../configs/posetimation/DSTA/posetrack17/configs-resnet50.yaml
 ```
 
 ## Citations
