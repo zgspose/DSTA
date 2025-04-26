@@ -57,7 +57,7 @@ python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs-resnet50.ya
 cd tools
 python run.py --cfg ../configs/posetimation/DSTA/posetrack17/configs-resnet50.yaml --val 
 ```
-### Inference
+### Video Inference
 ```
 cd tools
 python inference.py --cfg ../configs/posetimation/DSTA/posetrack17/configs-resnet50.yaml
