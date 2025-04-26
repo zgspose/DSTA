@@ -202,5 +202,5 @@ detector = YOLO('./models/yolo/yolov8s-pose.pt')
 
 # Run inference and visualization on the video
 video_path = './sample.mp4'
-
+# window_size 输入帧大小
 results = process_video(video_path, model, detector, device, cfg, window_size=3)
