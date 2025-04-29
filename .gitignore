@@ -3,3 +3,5 @@
 /support_files
 /checkpoints
 *pyc
+*.mp4
+/models

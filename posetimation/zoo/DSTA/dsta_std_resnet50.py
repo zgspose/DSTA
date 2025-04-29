@@ -12,7 +12,7 @@ from easydict import EasyDict
 from einops import rearrange
 from ..base import BaseModel
 
-from utils.common import TRAIN_PHASE
+from utils.common import TRAIN_PHASE, INFERENCE_PHASE
 from utils.utils_registry import MODEL_REGISTRY
 from timm.models.layers import DropPath
 from functools import partial
@@ -105,7 +105,7 @@ class Linear(nn.Module):
 @MODEL_REGISTRY.register()
 class DSTA_STD_ResNet50(BaseModel):
 
-    def __init__(self, cfg, phase, **kwargs):
+    def __init__(self, cfg, phase=INFERENCE_PHASE, **kwargs):
         super(DSTA_STD_ResNet50, self).__init__()
         self.logger = logging.getLogger(__name__)
         self.pretrained_layers = cfg['MODEL']['EXTRA']['PRETRAINED_LAYERS']
@@ -157,7 +157,10 @@ class DSTA_STD_ResNet50(BaseModel):
 
     def forward(self, x, meta=None):
         batch_size = x.shape[0]
-        x = torch.cat(x.split(3, dim=1), 0)
+        if batch_size == 1:
+            x = x.squeeze(0)
+        else:
+            x = torch.cat(x.split(3, dim=1), 0)
         feat = self.preact(x)
         feat = self.avg_pool(feat).reshape(batch_size * self.num_frame, -1)
         feat = self.fc_coord(feat).reshape(batch_size * self.num_frame, self.num_joints, self.embed_dim_ratio)
@@ -189,7 +192,7 @@ class DSTA_STD_ResNet50(BaseModel):
 
         #Aggregation
         feat = torch.stack((feat_T, feat_S), dim=1)
-        feat = self.weighted_mean(feat).squeeze()
+        feat = self.weighted_mean(feat).squeeze(1)
         idx = self.joint_ordor
         feat = feat[:, idx]
 

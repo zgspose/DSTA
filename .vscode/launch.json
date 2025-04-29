@@ -1,0 +1,17 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "inference",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "tools/inference.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "/media/D/fhw/yyh_tmp/DSTA/configs/posetimation/DSTA/posetrack17/configs-resnet50.yaml"]
+        }
+    ]
+}

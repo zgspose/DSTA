@@ -3,6 +3,9 @@ import torch
 import cv2
 import numpy as np
 from torchvision import transforms
+import sys
+sys.path.append('/media/D/fhw/yyh_tmp/DSTA/')
+
 from posetimation.zoo.DSTA.dsta_std_resnet50 import DSTA_STD_ResNet50 
 from engine.defaults import default_parse_args
 from posetimation import get_cfg, update_config 
@@ -11,7 +14,7 @@ from ultralytics import YOLO
 import yaml
 
 # Indices of keypoints used in PoseTrack (excluding 'left_eye' and 'right_eye')
-used_keypoint_indices = [0,2,5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+used_keypoint_indices = [0, 1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
 used_keypoint_colors = [
     (255, 0, 0),      # Crimson Red
@@ -52,7 +55,7 @@ def run_inference(model, frames, device, cfg):
 def load_model(cfg, checkpoint_path, device):
     model = DSTA_STD_ResNet50(cfg, device=device)
     checkpoint = torch.load(checkpoint_path, map_location=device)
-    model.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(checkpoint['state_dict'])
     model.to(device)  # Move the model to the device
     model.eval()
     return model
@@ -61,7 +64,7 @@ def process_keypoints(predicts, used_keypoint_indices):
     keypoints = predicts['pred_jts']
 
     # **Filter the keypoints**
-    keypoints = keypoints[:, used_keypoint_indices, :, :]
+    keypoints = keypoints[:, used_keypoint_indices]
 
     return keypoints
 
@@ -74,7 +77,7 @@ def process_video(video_path, model, detector, device, cfg, window_size=3, step_
     fps = cap.get(cv2.CAP_PROP_FPS)
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    out = cv2.VideoWriter('output_video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width, frame_height))
+    out = cv2.VideoWriter('output1_video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width, frame_height))
 
     total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     print("Number of frames: ", total_frames)
@@ -107,15 +110,19 @@ def process_video(video_path, model, detector, device, cfg, window_size=3, step_
             boxes = detection.boxes  # Boxes object
             
             for box in boxes:
+                if box.cls != 0:
+                    continue
                 x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
                 
                 # Enlarge bbox by 25%
+                # 原始bbox
                 w = x2 - x1
                 h = y2 - y1
                 x_center = x1 + w / 2
                 y_center = y1 + h / 2
                 w *= 1.25
                 h *= 1.25
+                # enlarge后bbox
                 x1 = x_center - w / 2
                 y1 = y_center - h / 2
                 x2 = x_center + w / 2
@@ -126,11 +133,13 @@ def process_video(video_path, model, detector, device, cfg, window_size=3, step_
                 y1_crop = int(max(y1, 0))
                 x2_crop = int(min(x2, central_frame.shape[1]))
                 y2_crop = int(min(y2, central_frame.shape[0]))
+                crop_w, crop_h = x2_crop - x1_crop, y2_crop - y1_crop
+
 
                 # Apply the same bbox to all sampled frames
                 cropped_frames = []
                 for frame in sampled_frames:
-                    cropped_frame = frame[y1_crop:y2_crop, x1_crop:x2_crop]
+                    cropped_frame = frame[y1_crop:y2_crop, x1_crop:x2_crop] # H, W, C
                     processed_frame = preprocess_frame(cropped_frame, cfg)
                     cropped_frames.append(processed_frame)
                 
@@ -147,6 +156,8 @@ def process_video(video_path, model, detector, device, cfg, window_size=3, step_
                 keypoints = keypoints[0]  # shape: [num_keypoints, 2]
 
                 # Map keypoints to original image coordinate space
+                keypoints[:, 0] = keypoints[:, 0] * crop_w
+                keypoints[:, 1] = keypoints[:, 1] * crop_h
                 keypoints[:, 0] += x1_crop
                 keypoints[:, 1] += y1_crop
 
@@ -192,15 +203,17 @@ args = default_parse_args()
 cfg = setup(args)
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-model_path = "./DSTA_Resnet50.pt"
+# 替换为使用的姿态估计检测器的权重路径
+model_path = "models/pose_estimate/Resnet50_posetrack.pth"
 
 # Load the model
 model = load_model(cfg, model_path, device)
 
 # define detector
-detector = YOLO('./models/yolo/yolov8s-pose.pt')
+detector = YOLO('models/detector/yolov8x.pt')
 
 # Run inference and visualization on the video
-video_path = './sample.mp4'
+video_path = 'input.mp4'
+
 # window_size 输入帧大小
 results = process_video(video_path, model, detector, device, cfg, window_size=3)
